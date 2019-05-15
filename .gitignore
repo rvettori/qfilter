@@ -1,0 +1,5 @@
+.readme
+*__pycache__/
+dist/
+qfilter.egg-info/
+qfilter/__pycache__
