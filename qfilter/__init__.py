@@ -2,7 +2,7 @@ import re
 import collections
 
 
-def qfilter(params, custom_filters={}, sanitize_from=True, prefix=None):
+def qfilter(params, custom_filters={}, quote_fields=True, sanitize_from=True, prefix=None):
     """ Parameters:
     Args:
         params: dictionary of filters, ex: {field__eq: '1'}
@@ -22,7 +22,8 @@ def qfilter(params, custom_filters={}, sanitize_from=True, prefix=None):
     def __sanitize(field):
         if field == '*':
             return '*'
-        return '"{}"'.format(re.sub(r'[\s()\-\:]', '', field))
+        tpl = '"{}"' if quote_fields else '{}'
+        return tpl.format(re.sub(r'[\s()\-\:]', '', field))
 
     def _select(value):
         fields = value.split(',')
@@ -44,9 +45,9 @@ def qfilter(params, custom_filters={}, sanitize_from=True, prefix=None):
         for f in fields:
             fs = f.strip()
             if fs.startswith('-'):
-                exp.append('"{}" desc'.format(fs[1:]))
+                exp.append('{} desc'.format(__sanitize(fs[1:])))
             else:
-                exp.append('"{}" asc'.format(fs))
+                exp.append('{} asc'.format(__sanitize(fs)))
         return "order by {}".format(', '.join(exp))
 
     def filter__default(field, data):

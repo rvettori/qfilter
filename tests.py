@@ -104,6 +104,10 @@ class QFilterTest(unittest.TestCase):
         self.assertEqual('select * from table1', exp.sql)
         self.assertEqual('from table1', exp.from_)
 
+    def test_without_quote_fields(self):
+        exp = qfilter(dict(_order='-field',_select='field',_from='table1'), quote_fields=False)
+        self.assertEqual('select field from table1 order by field desc', exp.sql)
+        self.assertEqual('from table1', exp.from_)
 
     def test_clause_select(self):
         exp = qfilter(dict(_select='a,b,c', _from='table1'))

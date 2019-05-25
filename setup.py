@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(name='qfilter',
-      version='0.3',
+      version='0.4',
       description='Simple querystring filter',
       url='https://github.com/rvettori/qfilter',
       author='Rafael Vettori',
