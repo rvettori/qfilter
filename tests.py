@@ -105,8 +105,16 @@ class QFilterTest(unittest.TestCase):
         self.assertEqual('from table1', exp.from_)
 
     def test_without_quote_fields(self):
-        exp = qfilter(dict(_order='-field',_select='field',_from='table1'), quote_fields=False)
-        self.assertEqual('select field from table1 order by field desc', exp.sql)
+        self.maxDiff = None
+        param = dict(_order='-field', _select='field',_from='table1',
+                     field__eq=123, field__gt=123, field__gte=123,
+                     field__lt=123, field__lte=123, field__not=123,
+                     field__any=123, field__starts=123, field__ends=123,
+                     field__istarts=123, field__iends=123, field__cont=123,
+                     field__icont=123)
+        exp = qfilter(param, quote_fields=False)
+        result = 'select field from table1 where field = :field__eq and field > :field__gt and field >= :field__gte and field < :field__lt and field <= :field__lte and field <> :field__not and field in :field__any and field like :field__starts and field like :field__ends and upper(field) like upper(:field__istarts) and upper(field) like upper(:field__iends) and field like :field__cont and upper(field) like upper(:field__icont) order by field desc'
+        self.assertEqual(result, exp.sql)
         self.assertEqual('from table1', exp.from_)
 
     def test_clause_select(self):

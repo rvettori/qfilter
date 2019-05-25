@@ -51,92 +51,92 @@ def qfilter(params, custom_filters={}, quote_fields=True, sanitize_from=True, pr
         return "order by {}".format(', '.join(exp))
 
     def filter__default(field, data):
-        return ('and "{}" = :{}'.format(field, field), {field: data[field]})
+        return ('and {} = :{}'.format(__sanitize(field), field), {field: data[field]})
 
     def filter__eq(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
-        return ('and "{}" = :{}'.format(where, field), {field: data[field]})
+        return ('and {} = :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__gt(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
-        return ('and "{}" > :{}'.format(where, field), {field: data[field]})
+        return ('and {} > :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__gte(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
-        return ('and "{}" >= :{}'.format(where, field), {field: data[field]})
+        return ('and {} >= :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__lt(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
-        return ('and "{}" < :{}'.format(where, field), {field: data[field]})
+        return ('and {} < :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__lte(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
-        return ('and "{}" <= :{}'.format(where, field), {field: data[field]})
+        return ('and {} <= :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__not(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
-        return ('and "{}" <> :{}'.format(where, field), {field: data[field]})
+        return ('and {} <> :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__any(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
         data[field] = tuple(str(data[field]).split(','))
-        return ('and "{}" in :{}'.format(where, field), {field: data[field]})
+        return ('and {} in :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__starts(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
         data[field] = '{}%'.format(data[field])
-        return ('and "{}" like :{}'.format(where, field), {field: data[field]})
+        return ('and {} like :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__istarts(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
         data[field] = '{}%'.format(data[field])
-        return ('and upper("{}") like upper(:{})'.format(where, field), {field: data[field]})
+        return ('and upper({}) like upper(:{})'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__ends(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
         data[field] = '%{}'.format(data[field])
-        return ('and "{}" like :{}'.format(where, field), {field: data[field]})
+        return ('and {} like :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__iends(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
         data[field] = '%{}'.format(data[field])
-        return ('and upper("{}") like upper(:{})'.format(where, field), {field: data[field]})
+        return ('and upper({}) like upper(:{})'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__cont(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
         data[field] = '%{}%'.format(data[field])
-        return ('and "{}" like :{}'.format(where, field), {field: data[field]})
+        return ('and {} like :{}'.format(__sanitize(where), field), {field: data[field]})
 
     def filter__icont(field, data):
         parts = field.split(SPLITTER)
         parts.pop()
         where = ''.join(parts)
         data[field] = '%{}%'.format(data[field])
-        return ('and upper("{}") like upper(:{})'.format(where, field), {field: data[field]})
+        return ('and upper({}) like upper(:{})'.format(__sanitize(where), field), {field: data[field]})
 
     if prefix:
         q = {re.sub('^%s[.]' % prefix, '', it[0]): it[1] for it in params.items() if it[0].startswith(prefix)}
